@@ -5,7 +5,9 @@ A simple arcade style game made in HTML and Javascript! Directions to play:
 - with every point you collect the yellow ball size decreases
 - you have 5 chances where you can miss the yellow ball
 
-Maximum scrose is upto 30! 
+Play the game here:   https://stargalax.github.io/SimpleGame/
+
+Maximum score is upto 30! 
 Share your scores to me on github after you play! 
 I am open to suggestions as this is a learning proejct I built!
 
