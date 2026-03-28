@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Arcade Catch Game</title>
+  <style>
+    canvas {
+      background: #111;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let player = { x: 180, y: 550, width: 40, height: 20 };
+    let objects = [];
+    let score = 0;
+    let misses = 0;
+
+
+    let keys = {};
+    document.addEventListener("keydown", (e) => keys[e.key] = true);
+    document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+    function movePlayer() {
+      let speed = 5;
+
+      if (keys["ArrowLeft"]) player.x -= speed;
+      if (keys["ArrowRight"]) player.x += speed;
+
+
+      player.x = Math.max(0, Math.min(400 - player.width, player.x));
+    }
+    function spawnObject() {
+      let baseSize = 20;
+      let size = Math.max(5, baseSize - score);
+      objects.push({ x: Math.random() * (400 - size), y: 0, size: size });
+    }
+
+    function update() {
+      movePlayer();
+
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Player grows with score
+      player.width = Math.min(100, 40 + score * 2);
+
+
+      ctx.fillStyle = "cyan";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+
+      ctx.fillStyle = "yellow";
+      objects.forEach((obj, index) => {
+        obj.y += 4 + score * 0.3; // speed increases with score
+        ctx.fillRect(obj.x, obj.y, obj.size, obj.size);
+
+        // Collision detection
+        if (
+          obj.x < player.x + player.width &&
+          obj.x + obj.size > player.x &&
+          obj.y < player.y + player.height &&
+          obj.y + obj.size > player.y
+        ) {
+          score++;
+          objects.splice(index, 1);
+        }
+
+        // Missed object
+        if (obj.y > 600) {
+          misses++;
+          objects.splice(index, 1);
+        }
+      });
+
+      // Draw score & misses
+      ctx.fillStyle = "white";
+      ctx.font = "16px Arial";
+      ctx.fillText("Score: " + score, 10, 20);
+      ctx.fillText("Misses: " + misses, 10, 40);
+
+      // Game over
+      if (misses >= 5) {
+        ctx.fillStyle = "red";
+        ctx.font = "30px Arial";
+        ctx.fillText("Game Over", 120, 300);
+        return;
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    setInterval(spawnObject, 1000);
+    update();
+  </script>
+
+</body>
+
+</html>
